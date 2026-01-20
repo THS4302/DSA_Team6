@@ -85,7 +85,7 @@ def run_comprehensive_tests():
 
     #Third requirement: get(i)
     print("\n=== TEST 3: O(1) Performance Benchmark ===")
-    N = 50000
+    N = 1000000
     print(f"Populating {N} items to test scalability...")
     for i in range(N):
         lst.insert(i, i)
