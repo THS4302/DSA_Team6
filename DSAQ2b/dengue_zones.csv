@@ -1,0 +1,33 @@
+zone_name,active_cases,breeding_sites,population_density,region,historical_avg_cases,neighbor_risk_index
+Ang Mo Kio,45,28,8500,North,38,0.45
+Bedok,67,42,9200,East,61,0.62
+Bishan,38,22,7800,Central,34,0.4
+Bukit Batok,52,31,8100,West,48,0.55
+Bukit Merah,71,48,9800,Central,65,0.75
+Bukit Panjang,41,25,7600,West,36,0.42
+Bukit Timah,29,15,6200,Central,27,0.3
+Choa Chu Kang,48,29,7900,West,44,0.5
+Clementi,55,35,8400,West,50,0.58
+Geylang,82,55,10500,East,75,0.82
+Hougang,63,38,8900,Northeast,57,0.6
+Jurong East,58,36,8600,West,52,0.59
+Jurong West,49,30,7700,West,45,0.53
+Kallang,74,51,10200,Central,68,0.78
+Marine Parade,61,39,9100,East,56,0.61
+Pasir Ris,44,27,7500,East,40,0.46
+Punggol,36,20,6800,Northeast,32,0.35
+Queenstown,59,37,8700,Central,53,0.6
+Sengkang,42,26,7400,Northeast,38,0.43
+Serangoon,68,44,9400,Northeast,62,0.7
+Tampines,72,47,9600,East,66,0.74
+Toa Payoh,65,41,9000,Central,59,0.67
+Woodlands,50,32,8000,North,46,0.54
+Yishun,54,34,8300,North,49,0.57
+Sembawang,39,23,7200,North,35,0.4
+Admiralty,33,18,6500,North,30,0.33
+Marsiling,46,28,7800,North,42,0.48
+Khatib,40,24,7300,North,36,0.42
+Yio Chu Kang,35,19,6700,Northeast,32,0.36
+Kovan,43,25,7600,Northeast,39,0.44
+Eunos,56,33,8200,East,51,0.58
+Paya Lebar,62,40,8800,East,57,0.63

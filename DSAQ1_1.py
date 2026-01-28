@@ -226,6 +226,105 @@ def run_comprehensive_tests():
     print("\n=== ALL 11 EDGE CASES PASSED SUCCESSFULLY ===")
 
 
+def print_list(lst):
+    values = []
+    curr = lst.head
+    while curr:
+        values.append(curr.value)
+        curr = curr.next
+    print("Current list:", values)
+
+
+
+def command_console():
+    lst = FastSinglyLinkedList()
+
+    print("\n========================================")
+    print(" Fast Singly Linked List ADT Console")
+    print("========================================")
+    print("Type 'help' to view available commands.")
+    print("Type 'exit' to quit.\n")
+
+    while True:
+        command = input("> ").strip()
+
+        if not command:
+            continue
+
+        if command.lower() == "exit":
+            print("Exiting console.")
+            break
+
+        if command.lower() == "help":
+            print("\nAvailable Commands:\n")
+            print("insert(i, value)   Insert value at index i")
+            print("remove(i)          Remove element at index i")
+            print("get(i)             Retrieve value at index i")
+            print("size               Display current list size")
+            print("help               Show this help menu")
+            print("exit               Exit the console\n")
+            print("Notes:")
+            print("- Indices must be integers")
+            continue
+
+        try:
+            # size
+            if command == "size":
+                print(f"Current list size: {lst.size()}")
+                continue
+
+            # insert(i, value)
+            if command.startswith("insert"):
+                inside = command[command.find("(")+1:command.find(")")]
+                i, value = map(int, inside.split(","))
+                lst.insert(i, value)
+                print(f"Inserted value {value} at index {i}.")
+                print_list(lst)
+                continue
+
+            # remove(i)
+            if command.startswith("remove"):
+                inside = command[command.find("(")+1:command.find(")")]
+                i = int(inside)
+                removed = lst.remove(i)
+                print(f"Removed element: {removed}")
+                print_list(lst)
+                continue
+
+            # get(i)
+            if command.startswith("get"):
+                inside = command[command.find("(")+1:command.find(")")]
+                i = int(inside)
+                value = lst.get(i)
+                print(f"Value at index {i}: {value}")
+                continue
+
+            print("Invalid command. Type 'help' for usage.")
+
+        except ValueError:
+            print("Error: Invalid command format or non-integer input.")
+        except Exception as e:
+            print(f"Error: {e}")
+
+
 
 if __name__ == "__main__":
-    run_comprehensive_tests()
+    while True:
+        print("\n========================================")
+        print(" DSA Q1 Fast Singly Linked List ADT")
+        print("========================================")
+        print("1. Execute Validation and Performance Tests")
+        print("2. Launch Interactive Command Console")
+        print("3. Exit Program")
+
+        choice = input("Enter your choice: ").strip()
+
+        if choice == "1":
+            run_comprehensive_tests()
+        elif choice == "2":
+            command_console()
+        elif choice == "3":
+            print("Program terminated.")
+            break
+        else:
+            print("Invalid selection.")
