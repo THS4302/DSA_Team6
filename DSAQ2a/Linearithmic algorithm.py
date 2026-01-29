@@ -41,10 +41,10 @@ def iterative_fft(a):
 
     return A  
 
-# Example usage with a simple input
+# example usage
 if __name__ == "__main__":
     input_signal = [1, 1, 1, 1, 0, 0, 0, 0]  # Real-valued time-domain signal
-    fft_result = iterative_fft([complex(x) for x in input_signal])  # Convert to complex
+    fft_result = iterative_fft([complex(x) for x in input_signal])  
 
     print("Input signal:")
     print(input_signal)
