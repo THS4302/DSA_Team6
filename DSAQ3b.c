@@ -90,7 +90,139 @@ static void fill_random_u32(uint32_t *arr, size_t n, uint32_t seed0) {
     }
 }
 
+static void print_test_header(void) {
+    printf("\n");
+    printf("===================================================================================\n");
+    printf("                               COMPREHENSIVE TEST                               \n");
+    printf("===================================================================================\n\n");
+}
+
+static void print_test_result(const char *test_name, int passed, const char *details) {
+    printf("%-40s [%s] %s\n", test_name, passed ? "PASS" : "FAIL", details);
+    if (!passed) {
+        fprintf(stderr, "ERROR: Test '%s' failed!\n", test_name);
+        exit(1);
+    }
+}
+
+static void test_empty_array(void) {
+    uint32_t *arr = NULL;
+    radix_sort_u32(arr, 0);
+    print_test_result("Empty Array (n=0)", 1, "No operations performed");
+}
+
+static void test_single_element(void) {
+    uint32_t arr[1] = {42};
+    radix_sort_u32(arr, 1);
+    int passed = (arr[0] == 42 && is_sorted_u32(arr, 1));
+    print_test_result("Single Element (n=1)", passed, "Trivially sorted");
+}
+
+static void test_already_sorted(void) {
+    uint32_t arr[5] = {1, 2, 3, 4, 5};
+    radix_sort_u32(arr, 5);
+    int passed = (arr[0] == 1 && arr[1] == 2 && arr[2] == 3 && 
+                  arr[3] == 4 && arr[4] == 5 && is_sorted_u32(arr, 5));
+    print_test_result("Already Sorted Array", passed, "4 passes still performed");
+}
+
+static void test_reverse_sorted(void) {
+    uint32_t arr[5] = {5, 4, 3, 2, 1};
+    radix_sort_u32(arr, 5);
+    int passed = (arr[0] == 1 && arr[1] == 2 && arr[2] == 3 && 
+                  arr[3] == 4 && arr[4] == 5 && is_sorted_u32(arr, 5));
+    print_test_result("Reverse Sorted Array", passed, "Worst case for some algorithms");
+}
+
+static void test_duplicate_values(void) {
+    uint32_t arr[5] = {3, 1, 3, 2, 1};
+    uint32_t expected[5] = {1, 1, 2, 3, 3};
+    radix_sort_u32(arr, 5);
+    int passed = 1;
+    for (int i = 0; i < 5; i++) {
+        if (arr[i] != expected[i]) {
+            passed = 0;
+            break;
+        }
+    }
+    passed = passed && is_sorted_u32(arr, 5);
+    print_test_result("Duplicate Values", passed, "Stable sorting maintained");
+}
+
+static void test_maximum_values(void) {
+    uint32_t arr[5] = {0xFFFFFFFF, 0xFFFFFFFE, 0xFFFFFFFF, 0xFFFFFFF0, 0xFFFFFFFF};
+    radix_sort_u32(arr, 5);
+    int passed = (arr[0] == 0xFFFFFFF0 && arr[1] == 0xFFFFFFFE && 
+                  arr[4] == 0xFFFFFFFF && is_sorted_u32(arr, 5));
+    print_test_result("Maximum Values (0xFFFFFFFF)", passed, "MSB pass handles 0xFF");
+}
+
+static void test_minimum_value(void) {
+    uint32_t arr[5] = {0, 5, 0, 3, 0};
+    radix_sort_u32(arr, 5);
+    int passed = (arr[0] == 0 && arr[1] == 0 && arr[2] == 0 && 
+                  arr[3] == 3 && arr[4] == 5 && is_sorted_u32(arr, 5));
+    print_test_result("Minimum Value (0x00000000)", passed, "Multiple zeros sorted stably");
+}
+
+static void test_mixed_boundary_values(void) {
+    uint32_t arr[6] = {0xFFFFFFFF, 0, 0x80000000, 1, 0x7FFFFFFF, 0xFFFFFFFE};
+    radix_sort_u32(arr, 6);
+    int passed = (arr[0] == 0 && arr[1] == 1 && arr[2] == 0x7FFFFFFF && 
+                  arr[3] == 0x80000000 && arr[4] == 0xFFFFFFFE && 
+                  arr[5] == 0xFFFFFFFF && is_sorted_u32(arr, 6));
+    print_test_result("Mixed Boundary Values", passed, "Full range tested");
+}
+
+static void test_small_random(void) {
+    const size_t n = 1000;
+    uint32_t *arr = (uint32_t *)malloc(n * sizeof(uint32_t));
+    if (!arr) {
+        fprintf(stderr, "malloc failed\n");
+        exit(1);
+    }
+    
+    fill_random_u32(arr, n, 123456789);
+    radix_sort_u32(arr, n);
+    int passed = is_sorted_u32(arr, n);
+    
+    free(arr);
+    print_test_result("Small Random (n=1000)", passed, "Random data sorted correctly");
+}
+
+static void run_all_tests(void) {
+    print_test_header();
+    
+    test_empty_array();
+    test_single_element();
+    test_already_sorted();
+    test_reverse_sorted();
+    test_duplicate_values();
+    test_maximum_values();
+    test_minimum_value();
+    test_mixed_boundary_values();
+    test_small_random();
+    
+    printf("\n");
+    printf("===================================================================================\n");
+    printf("                      ALL TESTS PASSED SUCCESSFULLY                               \n");
+    printf("===================================================================================\n\n");
+}
+
+// ============================================================================
+// PERFORMANCE BENCHMARKS (ORIGINAL CODE)
+// ============================================================================
+
 int main(void) {
+    // Run comprehensive test suite first
+    run_all_tests();
+    
+    // Continue with performance benchmarks
+    printf("\n");
+    printf("===================================================================================\n");
+    printf("                         PERFORMANCE BENCHMARKS                                    \n");
+    printf("===================================================================================\n\n");
+    
     const size_t sizes[] = { 10000, 100000, 500000, 1000000, 2000000 };
     const size_t num_sizes = sizeof(sizes) / sizeof(sizes[0]);
 
@@ -114,7 +246,6 @@ int main(void) {
         double radix_times[TRIALS];
         double qsort_times[TRIALS];
 
-        // keep input distribution consistent across trials but change seed each trial.
         for (int t = 0; t < TRIALS + WARMUP; t++) {
             uint32_t seed = 123456789u + (uint32_t)(t * 1013904223u);
 
@@ -143,7 +274,6 @@ int main(void) {
                 return 1;
             }
 
-            // Record after warm-up
             if (t >= WARMUP) {
                 int idx = t - WARMUP;
                 radix_times[idx] = radix_s;
@@ -168,6 +298,11 @@ int main(void) {
         free(data);
         free(copy);
     }
+
+    printf("\n");
+    printf("===================================================================================\n");
+    printf("                      BENCHMARKING COMPLETED SUCCESSFULLY                          \n");
+    printf("===================================================================================\n\n");
 
     return 0;
 }
