@@ -227,23 +227,38 @@ def run_comprehensive_tests():
 
 
 def print_list(lst):
-    values = []
+    logical = []
     curr = lst.head
     while curr:
-        values.append(curr.value)
+        logical.append(curr.value)
         curr = curr.next
-    print("Current list:", values)
+
+    print("List (logical):", logical)
+
+    if lst.nodes_list:
+        index_map = "   ".join(
+            f"{i}:{node.value}" for i, node in enumerate(lst.nodes_list)
+        )
+        print("Index → Value: ", index_map)
+    else:
+        print("Index → Value:  []")
 
 
 
 def command_console():
     lst = FastSinglyLinkedList()
 
+    default_values = [10, 20, 30, 40, 50, 60]
+    for i, val in enumerate(default_values):
+        lst.insert(i, val)
+
     print("\n========================================")
     print(" Fast Singly Linked List ADT Console")
     print("========================================")
     print("Type 'help' to view available commands.")
     print("Type 'exit' to quit.\n")
+    print("Default list:")
+    print_list(lst)
 
     while True:
         command = input("> ").strip()
@@ -260,6 +275,7 @@ def command_console():
             print("insert(i, value)   Insert value at index i")
             print("remove(i)          Remove element at index i")
             print("get(i)             Retrieve value at index i")
+            print("list               Display current list state")
             print("size               Display current list size")
             print("help               Show this help menu")
             print("exit               Exit the console\n")
@@ -268,30 +284,28 @@ def command_console():
             continue
 
         try:
-            # size
             if command == "size":
                 print(f"Current list size: {lst.size()}")
                 continue
 
-            # insert(i, value)
+            if command == "list":
+                print_list(lst)
+                continue
+
             if command.startswith("insert"):
                 inside = command[command.find("(")+1:command.find(")")]
                 i, value = map(int, inside.split(","))
                 lst.insert(i, value)
                 print(f"Inserted value {value} at index {i}.")
-                print_list(lst)
                 continue
 
-            # remove(i)
             if command.startswith("remove"):
                 inside = command[command.find("(")+1:command.find(")")]
                 i = int(inside)
                 removed = lst.remove(i)
                 print(f"Removed element: {removed}")
-                print_list(lst)
                 continue
 
-            # get(i)
             if command.startswith("get"):
                 inside = command[command.find("(")+1:command.find(")")]
                 i = int(inside)
